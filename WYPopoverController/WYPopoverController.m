@@ -31,7 +31,7 @@
 #define WY_BASE_SDK_7_ENABLED
 #endif
 
-#ifdef DEBUG
+#if defined(DEBUG) && !WYPOPOVER_NOLOG
 #define WY_LOG(fmt, ...)		NSLog((@"%s (%d) : " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
 #define WY_LOG(...)
@@ -433,6 +433,7 @@ static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINaviga
 @synthesize viewContentInsets;
 
 @synthesize overlayColor;
+@synthesize visibleAlpha;
 
 + (id)theme {
     
@@ -473,6 +474,7 @@ static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINaviga
     result.innerCornerRadius = 6;
     result.viewContentInsets = UIEdgeInsetsMake(3, 0, 0, 0);
     result.overlayColor = [UIColor clearColor];
+    result.visibleAlpha = 1.0f;
     
     return result;
 }
@@ -503,7 +505,8 @@ static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINaviga
     result.innerCornerRadius = 0;
     result.viewContentInsets = UIEdgeInsetsZero;
     result.overlayColor = [UIColor colorWithWhite:0 alpha:0.15];
-    
+    result.visibleAlpha = 1.0f;
+
     return result;
 }
 
@@ -595,7 +598,8 @@ static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINaviga
 }
 
 - (NSArray *)observableKeypaths {
-    return [NSArray arrayWithObjects:@"tintColor", @"outerStrokeColor", @"innerStrokeColor", @"fillTopColor", @"fillBottomColor", @"glossShadowColor", @"glossShadowOffset", @"glossShadowBlurRadius", @"borderWidth", @"arrowBase", @"arrowHeight", @"outerShadowColor", @"outerShadowBlurRadius", @"outerShadowOffset", @"outerCornerRadius", @"innerShadowColor", @"innerShadowBlurRadius", @"innerShadowOffset", @"innerCornerRadius", @"viewContentInsets", @"overlayColor", nil];
+    return [NSArray arrayWithObjects:@"tintColor", @"outerStrokeColor", @"innerStrokeColor", @"fillTopColor", @"fillBottomColor", @"glossShadowColor", @"glossShadowOffset", @"glossShadowBlurRadius", @"borderWidth", @"arrowBase", @"arrowHeight", @"outerShadowColor", @"outerShadowBlurRadius", @"outerShadowOffset", @"outerCornerRadius", @"innerShadowColor", @"innerShadowBlurRadius", @"innerShadowOffset", @"innerCornerRadius", @"viewContentInsets", @"overlayColor",
+            @"visibleAlpha", nil];
 }
 
 @end
@@ -2017,8 +2021,8 @@ static WYPopoverTheme *defaultTheme_ = nil;
             
             if (strongSelf)
             {
-                strongSelf->overlayView.alpha = 1;
-                strongSelf->backgroundView.alpha = 1;
+                strongSelf->overlayView.alpha = theme.visibleAlpha;
+                strongSelf->backgroundView.alpha = theme.visibleAlpha;
                 strongSelf->backgroundView.transform = endTransform;
             }
             adjustTintDimmed();
@@ -2938,7 +2942,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
 }
 
 #pragma mark Inline functions
-
+#if 0
 static NSString* WYStringFromOrientation(NSInteger orientation) {
     NSString *result = @"Unknown";
     
@@ -2961,6 +2965,7 @@ static NSString* WYStringFromOrientation(NSInteger orientation) {
     
     return result;
 }
+#endif
 
 static float WYStatusBarHeight() {
     UIInterfaceOrientation orienation = [[UIApplication sharedApplication] statusBarOrientation];
