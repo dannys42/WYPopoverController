@@ -1684,6 +1684,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
         themeUpdatesEnabled = YES;
         
         popoverContentSize_ = CGSizeZero;
+        self.overlayEnabled = YES;
     }
     
     return self;
@@ -1935,7 +1936,9 @@ static WYPopoverTheme *defaultTheme_ = nil;
         backgroundView.hidden = YES;
         
         [inView.window addSubview:backgroundView];
-        [inView.window insertSubview:overlayView belowSubview:backgroundView];
+        if( self.isOverlayEnabled ) {
+            [inView.window insertSubview:overlayView belowSubview:backgroundView];
+        }
     }
     
     [self updateThemeUI];
